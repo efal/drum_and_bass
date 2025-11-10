@@ -4,14 +4,10 @@
   "description": "An interactive drum machine and sequencer built with React, TypeScript, and Tailwind CSS. Create beats and basslines, adjust the tempo, and press play to hear your creation. Features classic drum sounds and a sawtooth synthesizer in a sleek, modern interface.",
   "icons": [
     {
-      "src": "/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
