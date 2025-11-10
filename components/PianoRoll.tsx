@@ -9,19 +9,49 @@ interface PianoRollProps {
   onPadClick: (row: number, col: number) => void;
   synthVolume: number;
   onVolumeChange: (newVolume: number) => void;
+  synthPan: number;
+  onPanChange: (newPan: number) => void;
+  synthType: OscillatorType;
+  onSynthTypeChange: (newType: OscillatorType) => void;
   noteDuration: number;
   onNoteDurationChange: (newDuration: number) => void;
+  filterType: BiquadFilterType;
+  onFilterTypeChange: (newType: BiquadFilterType) => void;
+  filterCutoff: number;
+  onFilterCutoffChange: (newCutoff: number) => void;
+  filterResonance: number;
+  onFilterResonanceChange: (newResonance: number) => void;
+  delayTime: number;
+  onDelayTimeChange: (newTime: number) => void;
+  delayFeedback: number;
+  onDelayFeedbackChange: (newFeedback: number) => void;
+  delayMix: number;
+  onDelayMixChange: (newMix: number) => void;
+  reverbMix: number;
+  onReverbMixChange: (newMix: number) => void;
 }
 
 const NOTE_NAMES = ['B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#', 'C'];
 const IS_BLACK_KEY = [false, true, false, true, false, true, false, false, true, false, true, false];
 
+const SYNTH_TYPES: { value: OscillatorType, label: string }[] = [
+    { value: 'sawtooth', label: 'Sawtooth' },
+    { value: 'sine', label: 'Sine' },
+    { value: 'square', label: 'Square' },
+    { value: 'triangle', label: 'Triangle' },
+];
 
-const VolumeIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-    </svg>
-);
+const FILTER_TYPES: { value: BiquadFilterType, label: string }[] = [
+    { value: 'lowpass', label: 'Lowpass' },
+    { value: 'highpass', label: 'Highpass' },
+    { value: 'bandpass', label: 'Bandpass' },
+];
+
+const DURATION_OPTIONS = [
+  { label: '1/2', value: 2, title: 'Half Beat (2 steps)' },
+  { label: '1', value: 4, title: 'One Beat (4 steps)' },
+  { label: '2', value: 8, title: 'Two Beats (8 steps)' },
+];
 
 const Pad: React.FC<{
   noteStatus: 'none' | 'start' | 'continuation';
@@ -57,104 +87,148 @@ const Pad: React.FC<{
   );
 };
 
-const DURATION_OPTIONS = [
-  { label: '1/2', value: 2, title: 'Half Beat (2 steps)' },
-  { label: '1', value: 4, title: 'One Beat (4 steps)' },
-  { label: '2', value: 8, title: 'Two Beats (8 steps)' },
-];
+interface EffectControlProps {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    min: number;
+    max: number;
+    step: number;
+    accentColor?: string;
+}
+
+const EffectControl: React.FC<EffectControlProps> = ({ label, value, onChange, min, max, step, accentColor = 'accent-pink-500' }) => (
+    <div className="flex flex-col gap-1">
+        <label className="text-xs text-gray-400 font-medium">{label}</label>
+        <input
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            onChange={(e) => onChange(parseFloat(e.target.value))}
+            className={`w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer ${accentColor}`}
+        />
+    </div>
+);
+
 
 export const PianoRoll: React.FC<PianoRollProps> = ({
-  grid,
-  currentStep,
-  isPlaying,
-  onPadClick,
-  synthVolume,
-  onVolumeChange,
-  noteDuration,
-  onNoteDurationChange,
+  grid, currentStep, isPlaying, onPadClick,
+  synthVolume, onVolumeChange, synthPan, onPanChange, synthType, onSynthTypeChange,
+  noteDuration, onNoteDurationChange,
+  filterType, onFilterTypeChange, filterCutoff, onFilterCutoffChange,
+  filterResonance, onFilterResonanceChange,
+  delayTime, onDelayTimeChange, delayFeedback, onDelayFeedbackChange, delayMix, onDelayMixChange,
+  reverbMix, onReverbMixChange,
 }) => {
   return (
-    <div
-      className="grid gap-1 sm:gap-2 items-center mt-8 pt-4 border-t border-gray-700"
-      style={{ gridTemplateColumns: `minmax(80px, auto) repeat(${NUM_STEPS}, minmax(0, 1fr))` }}
-    >
-      {/* Header Row: Title and Volume */}
-      <div className="flex flex-col items-start gap-3 pr-2 h-full justify-center">
-        <h2 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-400 self-center">Bass Synth</h2>
-        <div className="flex items-center gap-2 w-full">
-            <VolumeIcon className="w-5 h-5 text-gray-400 flex-shrink-0" />
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={synthVolume}
-                onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
-                aria-label="Synth Volume"
-            />
-        </div>
-         <div className="w-full">
-          <div className="text-sm text-gray-400 mb-1 text-center font-medium">Note Duration</div>
-          <div className="grid grid-cols-3 gap-1 bg-gray-900 p-1 rounded-md">
-            {DURATION_OPTIONS.map(({ label, value, title }) => (
-              <button
-                key={value}
-                onClick={() => onNoteDurationChange(value)}
-                title={title}
-                className={`px-2 py-1 text-sm font-semibold rounded-md transition-colors ${
-                  noteDuration === value
-                    ? 'bg-pink-500 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+    <div className="grid gap-2 grid-cols-1 xl:grid-cols-[minmax(80px,auto)_1fr] mt-8 pt-4 border-t border-gray-700">
+      
+      {/* --- Controls Column --- */}
+      <div className="xl:col-start-1 xl:col-end-2 xl:row-start-1 xl:row-end-3 p-4 bg-gray-900/40 rounded-lg">
+        <h2 className="text-lg font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-400 mb-4">Bass Synth</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-1 gap-4">
+            
+            {/* --- Main Synth Controls --- */}
+            <div className="flex flex-col gap-3 p-3 bg-gray-800/50 rounded-md">
+                <EffectControl label="Volume" value={synthVolume} onChange={onVolumeChange} min={0} max={1} step={0.01} />
+                <EffectControl label="Pan" value={synthPan} onChange={onPanChange} min={-1} max={1} step={0.1} accentColor="accent-violet-500" />
+                <div>
+                    <label className="text-xs text-gray-400 font-medium">Waveform</label>
+                    <select value={synthType} onChange={(e) => onSynthTypeChange(e.target.value as OscillatorType)}
+                        className="w-full text-xs bg-gray-700 text-white rounded p-1 border border-gray-600 focus:ring-1 focus:ring-pink-500 focus:outline-none"
+                    >
+                        {SYNTH_TYPES.map(type => (<option key={type.value} value={type.value}>{type.label}</option>))}
+                    </select>
+                </div>
+                 <div>
+                    <label className="text-xs text-gray-400 font-medium">Note Duration</label>
+                    <div className="grid grid-cols-3 gap-1 bg-gray-900 p-1 rounded-md">
+                        {DURATION_OPTIONS.map(({ label, value, title }) => (
+                            <button key={value} onClick={() => onNoteDurationChange(value)} title={title}
+                                className={`px-1 py-0.5 text-xs font-semibold rounded transition-colors ${ noteDuration === value ? 'bg-pink-500 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600' }`}
+                            >{label}</button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* --- Filter Controls --- */}
+            <div className="flex flex-col gap-3 p-3 bg-gray-800/50 rounded-md">
+                 <h3 className="text-sm font-semibold text-gray-300 text-center">Filter</h3>
+                 <div>
+                    <label className="text-xs text-gray-400 font-medium">Type</label>
+                    <select value={filterType} onChange={(e) => onFilterTypeChange(e.target.value as BiquadFilterType)}
+                        className="w-full text-xs bg-gray-700 text-white rounded p-1 border border-gray-600 focus:ring-1 focus:ring-pink-500 focus:outline-none"
+                    >
+                        {FILTER_TYPES.map(type => (<option key={type.value} value={type.value}>{type.label}</option>))}
+                    </select>
+                </div>
+                <EffectControl label="Cutoff" value={filterCutoff} onChange={onFilterCutoffChange} min={20} max={20000} step={1} />
+                <EffectControl label="Resonance" value={filterResonance} onChange={onFilterResonanceChange} min={0} max={20} step={0.1} />
+            </div>
+
+            {/* --- Delay Controls --- */}
+            <div className="flex flex-col gap-3 p-3 bg-gray-800/50 rounded-md">
+                 <h3 className="text-sm font-semibold text-gray-300 text-center">Delay</h3>
+                <EffectControl label="Mix" value={delayMix} onChange={onDelayMixChange} min={0} max={1} step={0.01} />
+                <EffectControl label="Time" value={delayTime} onChange={onDelayTimeChange} min={0} max={1} step={0.01} />
+                <EffectControl label="Feedback" value={delayFeedback} onChange={onDelayFeedbackChange} min={0} max={0.95} step={0.01} />
+            </div>
+
+             {/* --- Reverb Controls --- */}
+            <div className="flex flex-col gap-3 p-3 bg-gray-800/50 rounded-md">
+                 <h3 className="text-sm font-semibold text-gray-300 text-center">Reverb</h3>
+                <EffectControl label="Mix" value={reverbMix} onChange={onReverbMixChange} min={0} max={1} step={0.01} />
+            </div>
         </div>
       </div>
 
-      {/* Empty space above pads to align with drum step numbers */}
-      <div style={{ gridColumn: `span ${NUM_STEPS}` }} />
+      {/* --- Grid Column --- */}
+      <div className="xl:col-start-2 xl:col-end-3 xl:row-start-1 xl:row-end-3 grid gap-1 sm:gap-2 items-center"
+        style={{ gridTemplateColumns: `minmax(30px, auto) repeat(${NUM_STEPS}, minmax(0, 1fr))` }}
+      >
+        <div />{/* Empty space above pads to align with drum step numbers */}
+        <div style={{ gridColumn: `span ${NUM_STEPS}` }} />
 
-      {/* Grid Body: Note rows */}
-      {Array.from({ length: NUM_NOTES }).map((_, noteIndex) => {
-        // Pre-calculate note statuses for this row for efficient rendering
-        const noteStatuses: ('none' | 'start' | 'continuation')[] = Array(NUM_STEPS).fill('none');
-        for (let i = 0; i < NUM_STEPS; i++) {
-            const duration = grid[noteIndex][i];
-            if (duration > 0) {
-                noteStatuses[i] = 'start';
-                for (let j = 1; j < duration && i + j < NUM_STEPS; j++) {
-                    noteStatuses[i+j] = 'continuation';
-                }
-            }
-        }
-        
-        return (
-            <React.Fragment key={noteIndex}>
-              <div className={`flex items-center justify-center text-sm font-bold h-full rounded-md p-1 select-none
-                ${IS_BLACK_KEY[noteIndex] 
-                    ? 'bg-gray-800 text-white border-l-4 border-gray-800' 
-                    : 'bg-gray-300 text-gray-900'
-                }`}
-              >
-                {NOTE_NAMES[noteIndex]}
-              </div>
+        {/* Grid Body: Note rows */}
+        {Array.from({ length: NUM_NOTES }).map((_, noteIndex) => {
+          const noteStatuses: ('none' | 'start' | 'continuation')[] = Array(NUM_STEPS).fill('none');
+          for (let i = 0; i < NUM_STEPS; i++) {
+              const duration = grid[noteIndex][i];
+              if (duration > 0) {
+                  noteStatuses[i] = 'start';
+                  for (let j = 1; j < duration && i + j < NUM_STEPS; j++) {
+                      noteStatuses[i+j] = 'continuation';
+                  }
+              }
+          }
+          
+          return (
+              <React.Fragment key={noteIndex}>
+                <div className={`flex items-center justify-center text-sm font-bold h-full rounded-md p-1 select-none
+                  ${IS_BLACK_KEY[noteIndex] 
+                      ? 'bg-gray-800 text-white border-l-4 border-gray-800' 
+                      : 'bg-gray-300 text-gray-900'
+                  }`}
+                >
+                  {NOTE_NAMES[noteIndex]}
+                </div>
 
-              {Array.from({ length: NUM_STEPS }).map((_, stepIndex) => (
-                <Pad
-                  key={stepIndex}
-                  noteStatus={noteStatuses[stepIndex]}
-                  isCurrentStep={currentStep === stepIndex}
-                  isPlaying={isPlaying}
-                  onClick={() => onPadClick(noteIndex, stepIndex)}
-                />
-              ))}
-            </React.Fragment>
-        );
-      })}
+                {Array.from({ length: NUM_STEPS }).map((_, stepIndex) => (
+                  <Pad
+                    key={stepIndex}
+                    noteStatus={noteStatuses[stepIndex]}
+                    isCurrentStep={currentStep === stepIndex}
+                    isPlaying={isPlaying}
+                    onClick={() => onPadClick(noteIndex, stepIndex)}
+                  />
+                ))}
+              </React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 };

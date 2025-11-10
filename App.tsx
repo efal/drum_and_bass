@@ -1,41 +1,95 @@
 import React from 'react';
 import { Controls } from './components/Controls';
-import { SequencerGrid } from './components/SequencerGrid';
 import { PianoRoll } from './components/PianoRoll';
+import { SequencerGrid } from './components/SequencerGrid';
 import { useSequencer } from './hooks/useDrumMachine';
 
 const App: React.FC = () => {
   const {
-    isLoaded,
+    isReady,
+    initialize,
+    isLoading,
+    loadingMessage,
     isPlaying,
     tempo,
-    grid,
     currentStep,
+    drumGrid,
     selectedSounds,
     trackVolumes,
+    trackPans,
     soloedTracks,
     pianoRollGrid,
     octave,
     synthVolume,
+    synthPan,
+    synthType,
     noteDuration,
-    togglePad,
+    filterType,
+    filterCutoff,
+    filterResonance,
+    delayTime,
+    delayFeedback,
+    delayMix,
+    reverbMix,
     handlePlayPause,
     handleTempoChange,
-    handleSoundChange,
-    handleVolumeChange,
-    handleSoloTrack,
-    clearGrid,
+    clearPattern,
     savePattern,
     loadPattern,
     loadDrumPreset,
     loadBassPreset,
-    previewSample,
-    stopPreview,
+    toggleDrumPad,
+    handleSoundChange,
+    handleTrackVolumeChange,
+    handleTrackPanChange,
+    handleSoloTrack,
+    handlePreviewSample,
+    handleStopPreview,
     togglePianoRollPad,
     handleOctaveChange,
     handleSynthVolumeChange,
+    handleSynthPanChange,
+    handleSynthTypeChange,
     handleNoteDurationChange,
+    handleFilterTypeChange,
+    handleFilterCutoffChange,
+    handleFilterResonanceChange,
+    handleDelayTimeChange,
+    handleDelayFeedbackChange,
+    handleDelayMixChange,
+    handleReverbMixChange,
   } = useSequencer();
+
+  if (!isReady) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+        <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500 mb-2">
+                Drum & Bass Sequencer
+            </h1>
+            <p className="text-gray-400 mb-8">
+                Craft your rhythm and melody.
+            </p>
+            {isLoading ? (
+                 <>
+                    <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-lg text-gray-400">{loadingMessage}</p>
+                </>
+            ) : (
+                <button 
+                    onClick={initialize}
+                    className="px-8 py-4 bg-cyan-500 text-white font-bold rounded-lg text-xl transition-all duration-300 hover:bg-cyan-400 active:scale-95 shadow-lg shadow-cyan-500/30 focus:outline-none focus:ring-4 focus:ring-cyan-500/50"
+                >
+                    Start Creating
+                </button>
+            )}
+            {loadingMessage.startsWith('Error') && !isLoading && (
+              <p className="mt-4 text-red-400">{loadingMessage}</p>
+            )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4 md:p-8">
@@ -49,53 +103,67 @@ const App: React.FC = () => {
           </p>
         </header>
 
-        {isLoaded ? (
-          <main className="flex flex-col gap-8">
-            <Controls
-              isPlaying={isPlaying}
-              tempo={tempo}
-              octave={octave}
-              onPlayPause={handlePlayPause}
-              onTempoChange={handleTempoChange}
-              onOctaveChange={handleOctaveChange}
-              onClear={clearGrid}
-              onSave={savePattern}
-              onLoad={loadPattern}
-              onLoadDrumPreset={loadDrumPreset}
-              onLoadBassPreset={loadBassPreset}
-            />
-            <SequencerGrid
-              grid={grid}
-              currentStep={currentStep}
-              isPlaying={isPlaying}
-              onPadClick={togglePad}
-              selectedSounds={selectedSounds}
-              onSoundChange={handleSoundChange}
-              trackVolumes={trackVolumes}
-              onVolumeChange={handleVolumeChange}
-              soloedTracks={soloedTracks}
-              onSoloTrack={handleSoloTrack}
-              onPreviewSample={previewSample}
-              onStopPreview={stopPreview}
-            />
-            <PianoRoll
-              grid={pianoRollGrid}
-              currentStep={currentStep}
-              isPlaying={isPlaying}
-              onPadClick={togglePianoRollPad}
-              synthVolume={synthVolume}
-              onVolumeChange={handleSynthVolumeChange}
-              noteDuration={noteDuration}
-              onNoteDurationChange={handleNoteDurationChange}
-            />
-          </main>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-64">
-             <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-cyan-400"></div>
-            <p className="mt-4 text-gray-400">Loading audio engine...</p>
-          </div>
-        )}
-         <footer className="text-center mt-8 text-sm text-gray-500">
+        <main className="flex flex-col gap-8">
+          <Controls
+            isPlaying={isPlaying}
+            tempo={tempo}
+            octave={octave}
+            onPlayPause={handlePlayPause}
+            onTempoChange={handleTempoChange}
+            onOctaveChange={handleOctaveChange}
+            onClear={clearPattern}
+            onSave={savePattern}
+            onLoad={loadPattern}
+            onLoadDrumPreset={loadDrumPreset}
+            onLoadBassPreset={loadBassPreset}
+          />
+          <SequencerGrid
+            grid={drumGrid}
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            onPadClick={toggleDrumPad}
+            selectedSounds={selectedSounds}
+            onSoundChange={handleSoundChange}
+            trackVolumes={trackVolumes}
+            onVolumeChange={handleTrackVolumeChange}
+            trackPans={trackPans}
+            onPanChange={handleTrackPanChange}
+            soloedTracks={soloedTracks}
+            onSoloTrack={handleSoloTrack}
+            onPreviewSample={handlePreviewSample}
+            onStopPreview={handleStopPreview}
+          />
+          <PianoRoll
+            grid={pianoRollGrid}
+            currentStep={currentStep}
+            isPlaying={isPlaying}
+            onPadClick={togglePianoRollPad}
+            synthVolume={synthVolume}
+            onVolumeChange={handleSynthVolumeChange}
+            synthPan={synthPan}
+            onPanChange={handleSynthPanChange}
+            synthType={synthType}
+            onSynthTypeChange={handleSynthTypeChange}
+            noteDuration={noteDuration}
+            onNoteDurationChange={handleNoteDurationChange}
+            filterType={filterType}
+            onFilterTypeChange={handleFilterTypeChange}
+            filterCutoff={filterCutoff}
+            onFilterCutoffChange={handleFilterCutoffChange}
+            filterResonance={filterResonance}
+            onFilterResonanceChange={handleFilterResonanceChange}
+            delayTime={delayTime}
+            onDelayTimeChange={handleDelayTimeChange}
+            delayFeedback={delayFeedback}
+            onDelayFeedbackChange={handleDelayFeedbackChange}
+            delayMix={delayMix}
+            onDelayMixChange={handleDelayMixChange}
+            reverbMix={reverbMix}
+            onReverbMixChange={handleReverbMixChange}
+          />
+        </main>
+
+        <footer className="text-center mt-8 text-sm text-gray-500">
           <p>Built with React, TypeScript, and Tailwind CSS.</p>
         </footer>
       </div>

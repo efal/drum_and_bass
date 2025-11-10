@@ -1,38 +1,19 @@
 export const NUM_STEPS: number = 16;
 export const NUM_NOTES: number = 12; // C, C#, D, D#, E, F, F#, G, G#, A, A#, B
+export const NUM_TRACKS: number = 4;
 
-export const INITIAL_SOUNDS: string[] = ['kick', 'snare', 'hihat', 'clap'];
-export const NUM_TRACKS: number = INITIAL_SOUNDS.length;
+export const INITIAL_SOUNDS = ['kick', 'snare', 'hihat', 'clap'];
 
-export const SOUND_LIBRARY: { [category: string]: { name: string; id: string }[] } = {
-  Kicks: [
-    { name: 'Kick', id: 'kick' },
-    { name: 'Boom', id: 'boom' },
-  ],
-  Snares: [
-    { name: 'Snare', id: 'snare' },
-    { name: 'Tink', id: 'tink' },
-  ],
-  'Hi-Hats': [
-    { name: 'Hi-Hat', id: 'hihat' },
-    { name: 'Open Hat', id: 'openhat' },
-  ],
-  Percussion: [
-    { name: 'Clap', id: 'clap' },
-    { name: 'Tom', id: 'tom' },
-    { name: 'Ride', id: 'ride' },
-  ],
-};
-
-// A flattened map of all available samples for easy loading
-export const ALL_SAMPLES: Record<string, string> = {
-  kick: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/kick.wav',
-  snare: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/snare.wav',
-  hihat: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/hihat.wav',
-  clap: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/clap.wav',
-  boom: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/boom.wav',
-  ride: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/ride.wav',
-  tink: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tink.wav',
-  tom: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tom.wav',
-  openhat: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/openhat.wav',
+export const SOUND_LIBRARY: { [key: string]: { id: string; name: string; url: string }[] } = {
+  'JS30': [
+      { id: 'kick', name: 'Kick', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/kick.wav' },
+      { id: 'snare', name: 'Snare', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/snare.wav' },
+      { id: 'hihat', name: 'Hi-Hat', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/hihat.wav' },
+      { id: 'clap', name: 'Clap', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/clap.wav' },
+      { id: 'boom', name: 'Boom', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/boom.wav' },
+      { id: 'ride', name: 'Ride', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/ride.wav' },
+      { id: 'tink', name: 'Tink', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tink.wav' },
+      { id: 'tom', name: 'Tom', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tom.wav' },
+      { id: 'openhat', name: 'Open Hat', url: 'https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/openhat.wav' },
+  ]
 };

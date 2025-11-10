@@ -61,7 +61,7 @@ export const DRUM_PRESETS: DrumPreset[] = [
         [0, 2, 4, 6, 8, 10, 12],       // Hi-Hat (8th notes, leaving last for open hat)
         [14],                          // Open Hat (on the last 8th note)
       ]),
-      selectedSounds: ['boom', 'snare', 'hihat', 'openhat'],
+      selectedSounds: ['kick', 'snare', 'hihat', 'openhat'],
       trackVolumes: [1.0, 0.85, 0.7, 0.75],
       tempo: 110,
     },
@@ -103,7 +103,7 @@ export const DRUM_PRESETS: DrumPreset[] = [
             [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14],
             [15],
         ]),
-        selectedSounds: ['boom', 'tink', 'hihat', 'openhat'],
+        selectedSounds: ['kick', 'tink', 'hihat', 'openhat'],
         trackVolumes: [1.0, 0.7, 0.5, 0.8],
         tempo: 140,
     }
@@ -181,16 +181,101 @@ export const BASS_PRESETS: BassPreset[] = [
       ]),
       octave: 3,
       synthVolume: 0.5,
+      synthType: 'triangle',
+      reverbMix: 0.2,
+      delayMix: 0.3,
+      delayTime: 0.375,
+      delayFeedback: 0.4,
     }
   },
   {
-    name: 'Rock Root Notes',
+    name: 'Another One Bites',
     pattern: {
+      // E E E E | A G | E
       pianoRollGrid: createPianoGridWithDurations([
-        { noteRow: 11, steps: [{ step: 0, duration: 8 }, { step: 8, duration: 8 }] } // C notes with the kick
+        { noteRow: 7, steps: [ // E
+            { step: 0, duration: 2 }, { step: 2, duration: 1 }, { step: 3, duration: 1 }, 
+            { step: 4, duration: 2 }, { step: 12, duration: 4 }
+        ]},
+        { noteRow: 2, steps: [{ step: 8, duration: 2 }] }, // A
+        { noteRow: 4, steps: [{ step: 10, duration: 2 }] }, // G
       ]),
-      octave: 2,
+      octave: 1,
       synthVolume: 0.7,
+      synthType: 'sawtooth',
+      filterCutoff: 1200,
+      filterResonance: 2,
+      tempo: 110,
+    }
+  },
+  {
+    name: 'Seven Nation Army',
+    pattern: {
+      // E E G E D C B
+      pianoRollGrid: createPianoGridWithDurations([
+          { noteRow: 7, steps: [{ step: 0, duration: 3 }, { step: 4, duration: 2 }, { step: 8, duration: 2 }] },   // E
+          { noteRow: 4, steps: [{ step: 6, duration: 2 }] },   // G
+          { noteRow: 9, steps: [{ step: 10, duration: 2 }] },  // D
+          { noteRow: 11, steps: [{ step: 12, duration: 2 }] }, // C
+          { noteRow: 0, steps: [{ step: 14, duration: 2 }] },  // B (octave up)
+      ]),
+      octave: 1,
+      synthVolume: 0.8,
+      synthType: 'sawtooth',
+      filterCutoff: 900,
+      filterResonance: 5,
+      tempo: 124,
+    }
+  },
+  {
+    name: 'Chameleon Funk',
+    pattern: {
+      // Bb Eb ...
+      pianoRollGrid: createPianoGridWithDurations([
+          { noteRow: 1, steps: [{ step: 0, duration: 7 }, { step: 11, duration: 1 }] },   // Bb
+          { noteRow: 8, steps: [{ step: 7, duration: 4 }] },   // Eb
+      ]),
+      octave: 1,
+      synthVolume: 0.65,
+      synthType: 'sine',
+      tempo: 104,
+    }
+  },
+  {
+    name: 'Blues Shuffle',
+    pattern: {
+        pianoRollGrid: createPianoGridWithDurations([
+            { noteRow: 11, steps: [{ step: 0, duration: 4 }] }, // C
+            { noteRow: 7, steps: [{ step: 4, duration: 4 }] },  // E
+            { noteRow: 4, steps: [{ step: 8, duration: 4 }] },  // G
+            { noteRow: 3, steps: [{ step: 12, duration: 1 }] }, // G# -> A
+            { noteRow: 2, steps: [{ step: 13, duration: 3 }] }, // A
+        ]),
+        octave: 2,
+        synthVolume: 0.7,
+        synthType: 'square',
+        tempo: 130,
+    }
+  },
+    {
+    name: 'Trance Gate',
+    pattern: {
+        pianoRollGrid: createPianoGridWithDurations([
+            { noteRow: 11, steps: [{ step: 0, duration: 2 }, { step: 8, duration: 2 }]}, // C
+            { noteRow: 4, steps: [{ step: 2, duration: 2 }, { step: 10, duration: 2 }]}, // G
+            { noteRow: 6, steps: [{ step: 4, duration: 2 }, { step: 12, duration: 2 }]}, // F
+            { noteRow: 2, steps: [{ step: 6, duration: 2 }, { step: 14, duration: 2 }]}, // A
+        ]),
+        octave: 2,
+        synthVolume: 0.5,
+        synthType: 'sawtooth',
+        filterCutoff: 2500,
+        filterResonance: 3,
+        delayMix: 0.5,
+        delayTime: 0.215,
+        delayFeedback: 0.5,
+        reverbMix: 0.15,
+        tempo: 138,
     }
   },
   {
@@ -204,6 +289,8 @@ export const BASS_PRESETS: BassPreset[] = [
       ]),
       octave: 2,
       synthVolume: 0.65,
+      synthType: 'sine',
+      tempo: 117,
     }
   },
   {
@@ -217,26 +304,15 @@ export const BASS_PRESETS: BassPreset[] = [
         ]),
         octave: 2,
         synthVolume: 0.6,
-    }
-  },
-  {
-    name: 'Stand By Me',
-    pattern: {
-      // A - F#m - D - E
-      pianoRollGrid: createPianoGridWithDurations([
-          { noteRow: 2, steps: [{ step: 0, duration: 4 }] },   // A
-          { noteRow: 5, steps: [{ step: 4, duration: 4 }] },   // F#
-          { noteRow: 9, steps: [{ step: 8, duration: 4 }] },   // D
-          { noteRow: 7, steps: [{ step: 12, duration: 4 }] },  // E
-      ]),
-      octave: 2,
-      synthVolume: 0.7,
+        synthType: 'sawtooth',
+        filterCutoff: 1500,
+        tempo: 98,
     }
   },
   {
     name: 'House Pulse',
     pattern: {
-      // Pulsing 8th note bassline C -> C(oct up)
+      // Pulsing 8th note bassline C
       pianoRollGrid: createPianoGridWithDurations([
         { noteRow: 11, steps: [
           { step: 0, duration: 2 }, { step: 2, duration: 2 }, { step: 4, duration: 2 }, { step: 6, duration: 2 },
@@ -245,33 +321,10 @@ export const BASS_PRESETS: BassPreset[] = [
       ]),
       octave: 2,
       synthVolume: 0.6,
-    }
-  },
-  {
-    name: 'Trap Melody',
-    pattern: {
-        // C -> D# -> G
-        pianoRollGrid: createPianoGridWithDurations([
-            { noteRow: 11, steps: [{ step: 0, duration: 7 }] }, // C
-            { noteRow: 8, steps: [{ step: 7, duration: 3 }] }, // D#
-            { noteRow: 4, steps: [{ step: 10, duration: 6 }] }, // G
-        ]),
-        octave: 2,
-        synthVolume: 0.8,
-    }
-  },
-  {
-    name: 'Lo-fi Chords',
-    pattern: {
-      // Cmaj7 -> Fmaj7
-      pianoRollGrid: createPianoGridWithDurations([
-        { noteRow: 11, steps: [{ step: 0, duration: 4 }] }, // C
-        { noteRow: 7, steps: [{ step: 4, duration: 4 }] },  // E
-        { noteRow: 6, steps: [{ step: 8, duration: 4 }] },  // F
-        { noteRow: 2, steps: [{ step: 12, duration: 4 }] }, // A
-      ]),
-      octave: 3,
-      synthVolume: 0.55,
+      synthType: 'sawtooth',
+      filterType: 'lowpass',
+      filterCutoff: 800,
+      filterResonance: 4,
     }
   },
   {
@@ -284,19 +337,15 @@ export const BASS_PRESETS: BassPreset[] = [
         ]),
         octave: 3,
         synthVolume: 0.6,
-    }
-  },
-  {
-    name: 'Walking Bass',
-    pattern: {
-        pianoRollGrid: createPianoGridWithDurations([
-            { noteRow: 11, steps: [{ step: 0, duration: 4 }] }, // C
-            { noteRow: 7, steps: [{ step: 4, duration: 4 }] },  // E
-            { noteRow: 4, steps: [{ step: 8, duration: 4 }] },  // G
-            { noteRow: 2, steps: [{ step: 12, duration: 4 }] }, // A
-        ]),
-        octave: 2,
-        synthVolume: 0.7,
+        synthPan: 0.2,
+        synthType: 'square',
+        filterType: 'lowpass',
+        filterCutoff: 1200,
+        filterResonance: 12,
+        delayMix: 0.4,
+        delayTime: 0.17,
+        delayFeedback: 0.2,
+        tempo: 130,
     }
   },
   {
@@ -307,6 +356,9 @@ export const BASS_PRESETS: BassPreset[] = [
         ]),
         octave: 1,
         synthVolume: 0.8,
+        synthType: 'sine',
+        filterType: 'lowpass',
+        filterCutoff: 400,
     }
   },
 ];

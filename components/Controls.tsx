@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { DrumPattern, BassPattern } from '../types';
-import { DRUM_PRESETS, BASS_PRESETS } from '../presets';
+import { BassPattern, DrumPattern } from '../types';
+import { BASS_PRESETS, DRUM_PRESETS } from '../presets';
 
 interface ControlsProps {
   isPlaying: boolean;
@@ -48,10 +48,9 @@ const MusicNoteIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 const DrumIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20.29 8.29L16 12.58l-1.29-1.29a2 2 0 00-2.83 0l-4.29 4.29a2 2 0 102.83 2.83L12 16.82l1.29 1.29a2 2 0 102.83-2.83l-1.58-1.58L20.29 8.29a1 1 0 000-1.42 1 1 0 00-1.42 0zM5.5 8C4.67 8 4 7.33 4 6.5S4.67 5 5.5 5 7 5.67 7 6.5 6.33 8 5.5 8zM12 6a4 4 0 100-8 4 4 0 000 8z" />
+        <path d="M19.5 9.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zm-7-7c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5S13.88 2.5 12.5 2.5zm-8 7C3.12 9.5 2 10.62 2 12s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM12 17.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z" />
     </svg>
 );
-
 
 export const Controls: React.FC<ControlsProps> = ({
   isPlaying,
@@ -79,7 +78,7 @@ export const Controls: React.FC<ControlsProps> = ({
     }
     event.target.value = '';
   };
-
+  
   const handleDrumPresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const presetName = event.target.value;
     const preset = DRUM_PRESETS.find(p => p.name === presetName);
@@ -88,7 +87,7 @@ export const Controls: React.FC<ControlsProps> = ({
     }
     event.target.value = '';
   };
-  
+
   const handleBassPresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const presetName = event.target.value;
     const preset = BASS_PRESETS.find(p => p.name === presetName);
@@ -138,7 +137,7 @@ export const Controls: React.FC<ControlsProps> = ({
           />
         </div>
         <div className="flex items-center gap-2">
-            <div className="relative">
+             <div className="relative">
                 <DrumIcon className="w-5 h-5 absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 pointer-events-none" />
                 <select
                     onChange={handleDrumPresetChange}
@@ -146,7 +145,7 @@ export const Controls: React.FC<ControlsProps> = ({
                     className="bg-gray-700 text-gray-300 rounded-md pl-10 pr-4 py-2 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none appearance-none cursor-pointer hover:bg-gray-600"
                     aria-label="Load a drum preset"
                 >
-                    <option value="" disabled>Drum Patterns...</option>
+                    <option value="" disabled>Drum Beats...</option>
                     {DRUM_PRESETS.map(preset => (
                         <option key={preset.name} value={preset.name}>{preset.name}</option>
                     ))}

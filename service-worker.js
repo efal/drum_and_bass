@@ -1,6 +1,6 @@
 // service-worker.js
 
-const CACHE_NAME = 'drum-sequencer-cache-v1';
+const CACHE_NAME = 'drum-sequencer-cache-v18';
 
 // We will cache app shell files and audio samples during installation.
 // Other files (like from CDNs) will be cached on-the-fly during the fetch event.
