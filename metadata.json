@@ -1,5 +1,5 @@
 {
-  "name": "Drum & Bass Sequencer_2",
+  "name": "Drum & Bass Sequencer_3",
   "description": "An interactive drum machine and sequencer built with React, TypeScript, and Tailwind CSS. Create beats and basslines, adjust the tempo, and press play to hear your creation. Features classic drum sounds and a sawtooth synthesizer in a sleek, modern interface.",
   "requestFramePermissions": []
 }

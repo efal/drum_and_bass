@@ -40,15 +40,9 @@ const UploadIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const MusicNoteIcon: React.FC<{ className?: string }> = ({ className }) => (
+const TrashIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-    </svg>
-);
-
-const DrumIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.5 9.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zm-7-7c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5S13.88 2.5 12.5 2.5zm-8 7C3.12 9.5 2 10.62 2 12s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM12 17.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z" />
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
     </svg>
 );
 
@@ -98,103 +92,111 @@ export const Controls: React.FC<ControlsProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gray-900/50 rounded-xl border border-gray-700">
-      <div className="flex items-center gap-4 flex-wrap justify-center">
+    <div className="w-full bg-gray-800/80 backdrop-blur-md rounded-lg border border-gray-600 p-3 shadow-xl flex flex-col gap-3">
+      {/* Top Row: Controls excluding Tempo */}
+      <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-3">
+        
+        {/* Left Group: Play Button */}
         <button
-          onClick={onPlayPause}
-          className="w-14 h-14 bg-cyan-500 text-white rounded-full flex items-center justify-center transition-all duration-200 hover:bg-cyan-400 active:scale-95 shadow-lg shadow-cyan-500/30"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+            onClick={onPlayPause}
+            className={`h-10 w-14 flex items-center justify-center rounded-md transition-all duration-200 flex-shrink-0 ${
+            isPlaying 
+            ? 'bg-cyan-500 text-white hover:bg-cyan-400 shadow-lg shadow-cyan-500/20' 
+            : 'bg-gray-700 text-cyan-400 hover:bg-gray-600 border border-gray-600'
+            }`}
+            title={isPlaying ? 'Pause' : 'Play'}
         >
-          {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
+            {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
         </button>
-        <div className="flex items-center gap-2">
-           <button
-            onClick={onClear}
-            className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md transition-colors hover:bg-gray-600"
-          >
-            Clear
-          </button>
-          <button
-            onClick={onSave}
-            className="p-2 bg-gray-700 text-gray-300 rounded-md transition-colors hover:bg-gray-600"
-            aria-label="Save Pattern"
-          >
-            <SaveIcon className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleLoadClick}
-            className="p-2 bg-gray-700 text-gray-300 rounded-md transition-colors hover:bg-gray-600"
-            aria-label="Load Pattern"
-          >
-            <UploadIcon className="w-5 h-5" />
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept=".json"
-            className="hidden"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-             <div className="relative">
-                <DrumIcon className="w-5 h-5 absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 pointer-events-none" />
+
+        {/* Center Group: Octave & Presets */}
+        <div className="flex flex-wrap justify-center gap-2 items-center flex-grow">
+             {/* Compact Octave */}
+            <div className="flex items-center bg-gray-900/60 rounded-md px-2 py-1 h-10 border border-gray-700">
+                <span className="text-[10px] font-bold text-gray-500 uppercase mr-2">Octave</span>
+                 <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((val) => (
+                        <label key={val} className={`cursor-pointer w-6 h-7 flex items-center justify-center rounded text-xs font-bold transition-colors ${
+                        octave === val 
+                            ? 'bg-cyan-600 text-white shadow-sm' 
+                            : 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                        }`}>
+                        <input
+                            type="radio"
+                            name="octave"
+                            value={val}
+                            checked={octave === val}
+                            onChange={() => onOctaveChange(val)}
+                            className="hidden"
+                        />
+                        {val}
+                        </label>
+                    ))}
+                 </div>
+            </div>
+
+            {/* Presets */}
+            <div className="flex gap-2">
                 <select
                     onChange={handleDrumPresetChange}
-                    defaultValue=""
-                    className="bg-gray-700 text-gray-300 rounded-md pl-10 pr-4 py-2 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none appearance-none cursor-pointer hover:bg-gray-600"
-                    aria-label="Load a drum preset"
+                    value=""
+                    className="h-10 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded px-3 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                    title="Drum Presets"
                 >
-                    <option value="" disabled>Drum Beats...</option>
+                    <option value="" disabled className="text-gray-400">Drums</option>
                     {DRUM_PRESETS.map(preset => (
-                        <option key={preset.name} value={preset.name}>{preset.name}</option>
+                        <option key={preset.name} value={preset.name} className="bg-gray-800 text-white">{preset.name}</option>
                     ))}
                 </select>
-            </div>
-             <div className="relative">
-                <MusicNoteIcon className="w-5 h-5 absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 pointer-events-none" />
+
                 <select
                     onChange={handleBassPresetChange}
-                    defaultValue=""
-                    className="bg-gray-700 text-gray-300 rounded-md pl-10 pr-4 py-2 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none appearance-none cursor-pointer hover:bg-gray-600"
-                    aria-label="Load a bassline preset"
+                    value=""
+                    className="h-10 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded px-3 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                    title="Bass Presets"
                 >
-                    <option value="" disabled>Basslines...</option>
+                    <option value="" disabled className="text-gray-400">Synth</option>
                     {BASS_PRESETS.map(preset => (
-                        <option key={preset.name} value={preset.name}>{preset.name}</option>
+                        <option key={preset.name} value={preset.name} className="bg-gray-800 text-white">{preset.name}</option>
                     ))}
                 </select>
             </div>
         </div>
-        <div className="flex items-center gap-2">
-            <label htmlFor="octave" className="text-gray-400 font-medium">Octave</label>
-            <input
-              id="octave"
-              type="number"
-              min="0"
-              max="8"
-              value={octave}
-              onChange={(e) => onOctaveChange(parseInt(e.target.value, 10))}
-              className="w-20 bg-gray-800 text-white text-center rounded-md border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none p-2"
-              aria-label="Synth Octave"
-            />
+
+        {/* Right Group: Actions */}
+        <div className="flex items-center gap-1 bg-gray-900/30 p-1 rounded-lg border border-gray-700/50 ml-auto md:ml-0">
+             <button onClick={onClear} className="h-8 w-8 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-gray-800 rounded transition-colors" title="Clear Pattern">
+                <TrashIcon className="w-4 h-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-700 mx-1"></div>
+              <button onClick={onSave} className="h-8 w-8 flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:bg-gray-800 rounded transition-colors" title="Save Pattern">
+                <SaveIcon className="w-4 h-4" />
+              </button>
+              <button onClick={handleLoadClick} className="h-8 w-8 flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:bg-gray-800 rounded transition-colors" title="Load Pattern">
+                <UploadIcon className="w-4 h-4" />
+              </button>
+              <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
         </div>
       </div>
-
-      <div className="flex items-center gap-3 w-full sm:w-auto">
-        <label htmlFor="tempo" className="text-gray-400 font-medium">Tempo</label>
-        <input
-          id="tempo"
-          type="range"
-          min="40"
-          max="240"
-          step="1"
-          value={tempo}
-          onChange={(e) => onTempoChange(parseInt(e.target.value, 10))}
-          className="w-full sm:w-48 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-        />
-        <span className="text-lg font-mono bg-gray-800 px-3 py-1 rounded-md w-16 text-center">{tempo}</span>
+      
+      {/* Bottom Row: Precise Tempo Slider */}
+      <div className="flex items-center gap-3 bg-gray-900/40 rounded px-3 py-2 border border-gray-700/50">
+         <span className="text-xs font-bold text-gray-500 uppercase w-10">Tempo</span>
+         <input
+            type="range"
+            min="40"
+            max="240"
+            step="1"
+            value={tempo}
+            onChange={(e) => onTempoChange(parseInt(e.target.value, 10))}
+            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+         />
+         <div className="flex items-end gap-1 min-w-[4.5rem] justify-end">
+             <span className="text-3xl font-mono text-cyan-300 font-bold leading-none">{tempo}</span>
+             <span className="text-xs font-bold text-gray-500 mb-1">BPM</span>
+         </div>
       </div>
+
     </div>
   );
 };
